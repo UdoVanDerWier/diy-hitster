@@ -9,18 +9,17 @@ from dotenv import load_dotenv
 import os, secrets
 
 load_dotenv()
+
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 call_back = os.getenv("REDIRECT")
+url = os.getenv("URL")
 app_secret = os.getenv("APP_SECRET")
 mode = os.getenv("MODE")
+raw_origins = os.getenv("CORS_ORIGINS", "")
+origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
 
 app = FastAPI()
-
-origins = [
-    "http://127.0.0.1:5000",
-    "http://localhost:5000",
-]
 
 app.add_middleware(
     CORSMiddleware,
@@ -58,8 +57,8 @@ async def spotify_callback(request: Request, code: str, state: Optional[str] = N
     response.set_cookie(
         "session_id",
         value=session_id,
-        httponly=True,
-        secure=False,      # allowed on localhost
+        httponly=mode == "production",
+        secure=mode == "production",      # allowed on localhost
         samesite="Lax"     # or "None", but Secure is then required
     )
     return response

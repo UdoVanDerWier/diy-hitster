@@ -1,6 +1,9 @@
 from fastapi import Request
 from fastapi.responses import RedirectResponse, JSONResponse
 import secrets
+import os 
+
+url = os.getenv("URL")
 
 class Helpers:
     def __init__(self, oauth_states, sessions, spotify):
@@ -16,7 +19,7 @@ class Helpers:
         if not session_id or session_id not in self.sessions:
             state_id = secrets.token_hex(16)
             self.oauth_states[state_id] = path_state
-            return RedirectResponse(f"http://127.0.0.1:8000/spotify/login?state={state_id}")
+            return RedirectResponse(f"{url}/spotify/login?state={state_id}")
 
         access_token = self.sessions[session_id]["access_token"]
         self.spotify.setAccessToken(access_token)
@@ -26,6 +29,6 @@ class Helpers:
         if data.get("status_code") == 401:
             state_id = secrets.token_hex(16)
             self.oauth_states[state_id] = redirect_path
-            return RedirectResponse(f"http://127.0.0.1:8000/spotify/login?state={state_id}")
+            return RedirectResponse(f"{url}/spotify/login?state={state_id}")
         return JSONResponse(content=data)
 

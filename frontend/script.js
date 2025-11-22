@@ -1,4 +1,5 @@
-const URL = "http://127.0.0.1:5000";
+const API = window._env_.API;
+const URL = window._env_.URL;
 
 async function universalFetch(url, options = {}) {
     const response = await fetch(url, { ...options, credentials: "include" });
@@ -8,7 +9,7 @@ async function universalFetch(url, options = {}) {
 // Start Spotify login flow
 async function startLoginFlow() {
     const data = await universalFetch(
-        "http://127.0.0.1:8000/spotify/params?state=" + encodeURIComponent(URL)
+        `${API}/spotify/params?state=${encodeURIComponent(URL)}`
     );
 
     const params = new URLSearchParams(data);
@@ -19,7 +20,7 @@ async function loadPlaylists() {
     const playlistsDiv = document.getElementById("playlists");
     playlistsDiv.innerHTML = "Loading playlists...";
 
-    let data = await universalFetch("http://127.0.0.1:8000/spotify/getPlayLists");
+    let data = await universalFetch(`${API}/spotify/getPlayLists`);
     data = data.data;
 
     playlistsDiv.innerHTML = "";

@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-server
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      MODE: ${MODE}
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+      REDIRECT: ${REDIRECT}
+      URL: ${URL}
+      APP_SECRET: ${APP_SECRET}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+    restart: unless-stopped

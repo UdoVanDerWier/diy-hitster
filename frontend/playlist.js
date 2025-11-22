@@ -1,3 +1,5 @@
+const API = window._env_.API;
+const URL = window._env_.URL;
 
 let playlistTracks = []; // cached tracks
 
@@ -23,7 +25,7 @@ async function loadSongs() {
     const tableBody = document.querySelector("#songsTable tbody");
     tableBody.innerHTML = "Loading...";
 
-    let data = await universalFetch(`http://127.0.0.1:8000/spotify/getPlayLists/${playlistId}`);
+    let data = await universalFetch(`${API}/spotify/getPlayLists/${playlistId}`);
     data = data.data.tracks; // only tracks
 
     playlistTracks = data; // cache globally
@@ -106,8 +108,8 @@ async function generateHitsterPDF() {
     for (let i = 0; i < data.items.length; i++) {
         const track = data.items[i].track;
         const spotifyUrl = track.uri;
-
-        const qrDataUrl = await generateQrDataUrl(spotifyUrl, Math.min(cardWidth, cardHeight));
+        // spotifyurl
+        const qrDataUrl = await generateQrDataUrl(`${API}/spotify/play/${spotifyUrl}`, Math.min(cardWidth, cardHeight));
 
         // Pastel background for QR card
         const [r, g, b] = getRandomVibrantColor();
